@@ -205,10 +205,12 @@ class Slash(commands.Cog):
   async def _welcome(self,ctx,member:discord.Member=None):
     if not member:
       embed=discord.Embed(title=f"WELCOME TO {ctx.guild.name}",description="Welcome **New Member**!",color=discord.Color.random())
+      embed.set_image(url=ctx.guild.icon_url)
+      await ctx.send(embed=embed)
     if member :
       embed=discord.Embed(title=f"WELCOME TO {ctx.guild.name}",description=f"Welcome **{member.name}**!",color=discord.Color.random())
-    embed.set_image(url=ctx.guild.icon_url)
-    await ctx.send(content=f"{member.mention}",embed=embed,allowed_mentions=discord.AllowedMentions(everyone=False, roles=False))
+      embed.set_image(url=ctx.guild.icon_url)
+      await ctx.send(content=f"{member.mention}",embed=embed)
 
 
   @cog_ext.cog_slash(
@@ -229,6 +231,7 @@ class Slash(commands.Cog):
     if not member:
       member=ctx.author
     if ctx.channel.id!=759526501598101506:
+      ctx.command.reset_cooldown(ctx)
       return await ctx.send("You can't use this here try it in <#759526501598101506>" ,hidden=True)
     bools=["was%20The%20Imposter.", "was%20Not%20The%20Imposter." ]
     colors=["blue", "brown" ,"yellow", "green", "red", "orange", "lime", "pink" ,"blue" ,"darkblue" ]

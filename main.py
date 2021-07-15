@@ -28,8 +28,7 @@ for filename in os.listdir('./cogs'):
 keep_alive.keep_alive()
 token = os.getenv("TOKEN")
 
-@client.event
-async def on_ready():
-    print("DPG Bot Py is Live!")
+
+print(f"DPG Bot Py is Live!\ndiscord.py verion {discord.__version__}")
 
 client.run(token)

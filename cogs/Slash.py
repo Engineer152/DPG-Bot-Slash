@@ -212,7 +212,9 @@ class Slash(commands.Cog):
       embed.set_image(url=ctx.guild.icon_url)
       await ctx.send(content=f"{member.mention}",embed=embed)
 
-
+  @_welcome.error
+  async def _welcome_error(self,ctx,error):
+      await ctx.send("That person left the server",hidden=True)
   @cog_ext.cog_slash(
     name="vote",
     description="Vote the one who is sus",
@@ -243,5 +245,34 @@ class Slash(commands.Cog):
     if isinstance(error,commands.CommandOnCooldown):
       await ctx.send(f":warning: You Cannot Vote for another: {convert(int(error.retry_after))}.",hidden=True)
 
+  @cog_ext.cog_slash(
+      name="avatar",
+      description="To view how the person looks",
+      guild_ids=[720657696407420950],
+      options=[
+          create_option(
+          name="member",
+          description="Whose avatar do you want to view",
+          option_type=6,
+          required = False
+      )
+      ]
+  )
+  async def avatar(self,ctx,member:discord.Member=None):
+      if ctx.channel.id !=758297067155488799:
+        return
+      if not member:
+        member = ctx.author
+      embed = discord.Embed(colour=member.color)
+      embed.set_author(name=member,url=member.avatar_url)
+      embed.set_image(url=member.avatar_url_as(size=128))
+      await ctx.send(embed=embed)
+
+  @avatar.error
+  async def _avatar_error(self,ctx,error):
+    await ctx.send("That member  is not in the server" , hidden=True)
+
+
 def setup(client):
+    print("Loaded Slash")
     client.add_cog(Slash(client))

@@ -32,4 +32,5 @@ class Admin(commands.Cog):
     #await ctx.send('You are not the developer')
 
 def setup(client):
+    print("Loaded Admin")
     client.add_cog(Admin(client))

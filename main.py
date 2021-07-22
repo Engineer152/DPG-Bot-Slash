@@ -16,10 +16,12 @@ client = commands.Bot(
 slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload=True)
 client.remove_command("help")
 
+
 @client.event
-async def on_command_error(ctx,error):
-  if isinstance(error,commands.CommandNotFound):
-    return
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
@@ -27,7 +29,6 @@ for filename in os.listdir('./cogs'):
 
 keep_alive.keep_alive()
 token = os.getenv("TOKEN")
-
 
 print(f"DPG Bot Py is Live!\ndiscord.py verion {discord.__version__}")
 

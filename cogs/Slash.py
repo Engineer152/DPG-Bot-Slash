@@ -7,6 +7,8 @@ from discord_slash import SlashCommand
 from discord_slash import cog_ext
 from discord_slash.utils.manage_commands import create_option
 
+import pickle
+
 client = commands.Bot(
     command_prefix='.',
     case_insensitive=True
@@ -19,6 +21,23 @@ def convert(seconds):
     minutes = seconds // 60
     seconds %= 60
     return f'{minutes} minutes {seconds} seconds'
+
+
+def badwords():
+    with open("../swear_words.dat", "rb") as file:
+        bad = pickle.load(file)
+    verybad = []
+    for i in bad:
+        verybad.append(i.strip())
+    return verybad
+
+
+def checkforbad(message):
+    bad = badwords()
+    for i in range(len(bad)):
+        if bad[i] in message.split(" "):
+            return False
+    return True
 
 
 slash = SlashCommand(
@@ -34,8 +53,10 @@ class Slash(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @cog_ext.cog_slash(name="poll",
-                       description="Ask a question to your friends", options=[
+    @cog_ext.cog_slash(
+        name="poll",
+        description="Ask a question to your friends",
+        options=[
             create_option(
                 name="question",
                 description="This is the question.",
@@ -102,15 +123,21 @@ class Slash(commands.Cog):
                 option_type=3,
                 required=False
             )
-        ], guild_ids=[720657696407420950]
-
-                       )
+        ],
+        guild_ids=[720657696407420950]
+    )
     async def _poll(self, ctx, question, **first):
+        if not checkforbad(question):
+            # TODO:Change error message
+            return await ctx.send("An error occured please try again", hidden=True)
         options = list(first.values())
         if len(options) > 10:
             return await ctx.send("You cant have more than 10 options")
         final_options = ""
         for i in range(len(options)):
+            if not checkforbad(options[i]):
+                # TODO : Change error message
+                return await ctx.send("An error occured please try again", hidden=True)
             if options[i] == "":
                 continue
             final_options += f"{i + 1}. {options[i]}\n"
@@ -146,6 +173,9 @@ class Slash(commands.Cog):
         ]
     )
     async def _suggest(self, ctx, *, suggestion):
+        if not checkforbad(suggestion):
+            # TODO: change error message
+            return await ctx.send("An error occurred please try again", hidden=True)
         suggest_channel = self.client.get_channel(725000413358587984)
         embed = discord.Embed(description=suggestion, color=0x89aa00, timestamp=datetime.datetime.utcnow())
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
@@ -190,6 +220,10 @@ class Slash(commands.Cog):
         stuff = ["Name", "Artist", "Where", "Recording"]
         options = list(name.values())
         final_suggestion = ""
+        for i in range(len(options)):
+            if not checkforbad(options[i]):
+                # TODO:Change error message
+                return await ctx.send("An error occurred please try again",hidden=True)
         for i in range(len(options)):
             final_suggestion += f"{stuff[i]}:  {options[i]}\n"
         suggest_channel = self.client.get_channel(815770418006196235)

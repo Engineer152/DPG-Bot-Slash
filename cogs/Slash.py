@@ -128,16 +128,14 @@ class Slash(commands.Cog):
     )
     async def _poll(self, ctx, question, **first):
         if not checkforbad(question):
-            # TODO:Change error message
-            return await ctx.send("An error occured please try again", hidden=True)
+            return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**", hidden=True)
         options = list(first.values())
         if len(options) > 10:
             return await ctx.send("You cant have more than 10 options")
         final_options = ""
         for i in range(len(options)):
             if not checkforbad(options[i]):
-                # TODO : Change error message
-                return await ctx.send("An error occured please try again", hidden=True)
+                return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**", hidden=True)
             if options[i] == "":
                 continue
             final_options += f"{i + 1}. {options[i]}\n"
@@ -174,8 +172,7 @@ class Slash(commands.Cog):
     )
     async def _suggest(self, ctx, *, suggestion):
         if not checkforbad(suggestion):
-            # TODO: change error message
-            return await ctx.send("An error occurred please try again", hidden=True)
+            return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**", hidden=True)
         suggest_channel = self.client.get_channel(725000413358587984)
         embed = discord.Embed(description=suggestion, color=0x89aa00, timestamp=datetime.datetime.utcnow())
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
@@ -222,8 +219,7 @@ class Slash(commands.Cog):
         final_suggestion = ""
         for i in range(len(options)):
             if not checkforbad(options[i]):
-                # TODO:Change error message
-                return await ctx.send("An error occurred please try again",hidden=True)
+                return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**", hidden=True)
         for i in range(len(options)):
             final_suggestion += f"{stuff[i]}:  {options[i]}\n"
         suggest_channel = self.client.get_channel(815770418006196235)

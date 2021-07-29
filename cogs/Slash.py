@@ -24,7 +24,7 @@ def convert(seconds):
 
 
 def badwords():
-    with open("../swear_words.dat", "rb") as file:
+    with open("./swear_words.dat", "rb") as file:
         bad = pickle.load(file)
     verybad = []
     for i in bad:

@@ -248,12 +248,12 @@ class Slash(commands.Cog):
     )
     async def _welcome(self, ctx, member: discord.Member = None):
         if not member:
-            embed = discord.Embed(description=f"**WELCOME TO {ctx.guild.name}\nCheck <#723279473960681473> and <#732263314461032529> to get started**\nWelcome **New Member**!",
+            embed = discord.Embed(description=f"**WELCOME TO {ctx.guild.name}\nCheck <#723279473960681473> and <#732263314461032529> to get started**\n\nWelcome **New Member**!",
                                   color=discord.Color.random())
             embed.set_image(url=ctx.guild.icon_url)
             await ctx.send(embed=embed)
         if member:
-            embed = discord.Embed(description=f"**WELCOME TO {ctx.guild.name}Check <#723279473960681473> and <#732263314461032529> to get started**\nWelcome **{member.name}**!",
+            embed = discord.Embed(description=f"**WELCOME TO {ctx.guild.name}Check <#723279473960681473> and <#732263314461032529> to get started**\n\nWelcome **{member.name}**!",
                                   color=discord.Color.random())
             embed.set_image(url=ctx.guild.icon_url)
             await ctx.send(content=f"{member.mention}", embed=embed)

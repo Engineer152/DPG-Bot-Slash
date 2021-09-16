@@ -126,6 +126,7 @@ class Slash(commands.Cog):
         ],
         guild_ids=[720657696407420950]
     )
+    @commands.cooldown(1, 1800, commands.BucketType.member)
     async def _poll(self, ctx, question, **first):
         if not checkforbad(question):
             return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**", hidden=True)
@@ -135,7 +136,8 @@ class Slash(commands.Cog):
         final_options = ""
         for i in range(len(options)):
             if not checkforbad(options[i]):
-                return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**", hidden=True)
+                return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**",
+                                      hidden=True)
             if options[i] == "":
                 continue
             final_options += f"{i + 1}. {options[i]}\n"
@@ -170,6 +172,7 @@ class Slash(commands.Cog):
             )
         ]
     )
+    @commands.cooldown(1, 1800, commands.BucketType.member)
     async def _suggest(self, ctx, *, suggestion):
         if not checkforbad(suggestion):
             return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**", hidden=True)
@@ -219,7 +222,8 @@ class Slash(commands.Cog):
         final_suggestion = ""
         for i in range(len(options)):
             if not checkforbad(options[i]):
-                return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**", hidden=True)
+                return await ctx.send(f"{ctx.author.mention}  **That word is not allowed in this server.**",
+                                      hidden=True)
         for i in range(len(options)):
             final_suggestion += f"{stuff[i]}:  {options[i]}\n"
         suggest_channel = self.client.get_channel(815770418006196235)
@@ -248,13 +252,15 @@ class Slash(commands.Cog):
     )
     async def _welcome(self, ctx, member: discord.Member = None):
         if not member:
-            embed = discord.Embed(description=f"**WELCOME TO {ctx.guild.name}\nCheck <#723279473960681473> and <#732263314461032529> to get started**\n\nWelcome **New Member**!",
-                                  color=discord.Color.random())
+            embed = discord.Embed(
+                description=f"**WELCOME TO {ctx.guild.name}\nCheck <#723279473960681473> and <#732263314461032529> to get started**\n\nWelcome **New Member**!",
+                color=discord.Color.random())
             embed.set_image(url=ctx.guild.icon_url)
             await ctx.send(embed=embed)
         if member:
-            embed = discord.Embed(description=f"**WELCOME TO {ctx.guild.name}\nCheck <#723279473960681473> and <#732263314461032529> to get started**\n\nWelcome **{member.name}**!",
-                                  color=discord.Color.random())
+            embed = discord.Embed(
+                description=f"**WELCOME TO {ctx.guild.name}\nCheck <#723279473960681473> and <#732263314461032529> to get started**\n\nWelcome **{member.name}**!",
+                color=discord.Color.random())
             embed.set_image(url=ctx.guild.icon_url)
             await ctx.send(content=f"{member.mention}", embed=embed)
 
@@ -319,6 +325,14 @@ class Slash(commands.Cog):
     @avatar.error
     async def _avatar_error(self, ctx, error):
         await ctx.send("Either that member is not in the server or some error occurred", hidden=True)
+
+    @poll.error
+    @suggest.error
+    async def cooldown_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(
+                f":warning: You are on cooldown for another: {convert(int(error.retry_after))} to prevent spam.",
+                hidden=True)
 
 
 def setup(client):

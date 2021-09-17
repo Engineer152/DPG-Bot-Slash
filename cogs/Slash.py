@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-
+import requests , html
 import datetime
 import random
 from discord_slash import SlashCommand
@@ -333,6 +333,86 @@ class Slash(commands.Cog):
             await ctx.send(
                 f":warning: You are on cooldown for another: {convert(int(error.retry_after))} to prevent spam.",
                 hidden=True)
+
+    @cog_ext.cog_slash(
+        name="trivia",
+        description="Are you bored? Lets play some trivia!",
+        guild_ids=[720657696407420950]
+    )
+    @commands.cooldown(1, 15, commands.BucketType.guild)
+    async def _trivia(self, ctx):
+        x = requests.get("https://opentdb.com/api.php?amount=1")
+        trivia = x.json()
+        question = trivia["results"][0]
+        category = question["category"]
+        qtype = question["difficulty"]
+        q = question["question"]
+        list1 = [question["correct_answer"]]
+        for i in question["incorrect_answers"]:
+            list1.append(i)
+        q = html.unescape(q)
+        options = ""
+        random.shuffle(list1)
+        for i in range(len(list1)):
+            options += f"{i + 1}. {html.unescape(list1[i])}\n"
+        embed = discord.Embed(title="TRIVIA TIME!",
+                              description=f"Theme: {category.title()}\nDifficulty: {qtype.title()}\nQuestion: **{q}**\n__**You have 15s to react with the correct emoji**__",
+                              color=discord.Color.random())
+        embed.set_thumbnail(
+            url="https://i.ibb.co/x6dhj1m/trivia.png")
+        embed.add_field(name="OPTIONS", value=options, inline=False)
+        message = await ctx.send(embed=embed)
+        reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣"]
+        for i in range(len(list1)):
+            await message.add_reaction(reactions[i])
+
+        def answer():
+            for i in range(len(list1)):
+                if list1[i] == html.unescape(question["correct_answer"]):
+                    return int(i)
+
+        await asyncio.sleep(15)
+
+        new_message = await ctx.channel.fetch_message(message.id)
+        users = await new_message.reactions[answer()].users().flatten()
+        count = 1
+        correct_user = ""
+        for i in users:
+            if i.id == self.client.user.id:
+                continue
+            if i:
+                correct_user += f"{count}. {i.name}\n"
+                count += 1
+        if correct_user:
+            embed = discord.Embed(title="TRIVIA TIME!",
+                                  description=f"Theme: {category.title()}\nDifficulty: {qtype.title()}\nQuestion: **{q}**\n__**You have 15s to react with the correct emoji**__",
+                                  color=discord.Color.green())
+            embed.set_thumbnail(
+                url="https://i.ibb.co/x6dhj1m/trivia.png")
+            embed.add_field(name="OPTIONS", value=options, inline=False)
+            await message.edit(embed=embed)
+            embed = discord.Embed(
+                description=f"Time up!\nCorrect answer is `{question['correct_answer']}`\nThe people who got it correct are:\n{correct_user.strip()}",
+                color=discord.Color.green())
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(title="TRIVIA TIME!",
+                                  description=f"Theme: {category.title()}\nDifficulty: {qtype.title()}\nQuestion: **{q}**\n__**You have 15s to react with the correct emoji**__",
+                                  color=discord.Color.red())
+            embed.set_thumbnail(
+                url="https://i.ibb.co/x6dhj1m/trivia.png")
+            embed.add_field(name="OPTIONS", value=options, inline=False)
+            await message.edit(embed=embed)
+            embed = discord.Embed(
+                description=f"Time up!\nCorrect answer is `{question['correct_answer']}`\nNo one got it right",
+                color=discord.Color.red())
+            await ctx.send(embed=embed)
+
+    @_trivia.error
+    async def _trivia_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f":warning: You Cannot play trivia for another: {convert(int(error.retry_after))}.",
+                           hidden=True)
 
 
 def setup(client):

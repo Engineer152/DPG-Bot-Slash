@@ -341,6 +341,10 @@ class Slash(commands.Cog):
     )
     @commands.cooldown(1, 15, commands.BucketType.guild)
     async def _trivia(self, ctx):
+        if ctx.channel.id != 829319368038285322:
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send("This command can only be used in <#829319368038285322>")
+
         x = requests.get("https://opentdb.com/api.php?amount=1")
         trivia = x.json()
         question = trivia["results"][0]

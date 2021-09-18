@@ -417,6 +417,8 @@ class Slash(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f":warning: You Cannot play trivia for another: {convert(int(error.retry_after))}.",
                            hidden=True)
+        else:
+            print(error)
 
 
 def setup(client):

@@ -326,8 +326,8 @@ class Slash(commands.Cog):
     async def _avatar_error(self, ctx, error):
         await ctx.send("Either that member is not in the server or some error occurred", hidden=True)
 
-    @poll.error
-    @suggest.error
+    @_poll.error
+    @_suggest.error
     async def cooldown_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(

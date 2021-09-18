@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import requests , html
+import requests , html , asyncio
 import datetime
 import random
 from discord_slash import SlashCommand

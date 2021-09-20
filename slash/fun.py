@@ -5,6 +5,9 @@ from discord_slash import SlashCommand
 from discord_slash import cog_ext
 from discord_slash.utils.manage_commands import create_option
 
+client = commands.Bot(command_prefix='.', case_insensitive=True)
+slash = SlashCommand(client, sync_commands=True, override_type=True, sync_on_cog_reload=True,
+                     delete_from_unused_guilds=True)
 def convert(seconds):
     seconds = seconds % (24 * 3600)
     seconds %= 3600

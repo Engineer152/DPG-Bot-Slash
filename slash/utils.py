@@ -6,7 +6,9 @@ from discord_slash.utils.manage_commands import create_option
 import pickle
 
 
-
+client = commands.Bot(command_prefix='.', case_insensitive=True)
+slash = SlashCommand(client, sync_commands=True, override_type=True, sync_on_cog_reload=True,
+                     delete_from_unused_guilds=True)
 
 def badwords():
     with open("./swear_words.dat", "rb") as file:

@@ -13,7 +13,8 @@ client = commands.Bot(
     self_bot=False,
     activity=discord.Activity(type=discord.ActivityType.listening, name='-help'),
 )
-slash = SlashCommand(client, sync_commands=True, sync_on_cog_reload=True)
+slash = SlashCommand(client, sync_commands=True, override_type=True, sync_on_cog_reload=True,
+                     delete_from_unused_guilds=True)
 client.remove_command("help")
 
 

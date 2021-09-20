@@ -6,7 +6,9 @@ from discord_slash import SlashCommand
 from discord_slash import cog_ext, SlashContext
 from discord_slash.utils.manage_commands import create_option, create_choice
 
-
+client = commands.Bot(command_prefix='.', case_insensitive=True)
+slash = SlashCommand(client, sync_commands=True, override_type=True, sync_on_cog_reload=True,
+                     delete_from_unused_guilds=True)
 def convert(seconds):
     seconds = seconds % (24 * 3600)
     seconds %= 3600
@@ -25,10 +27,12 @@ class games(commands.Cog):
         base="trivia",
         name="question",
         description="Are you bored? Lets play some trivia!",
-        guild_ids=[709424743174111343]
+        guild_ids=[720657696407420950]
     )
     @commands.cooldown(1, 15, commands.BucketType.guild)
     async def _question(self, ctx):
+        if ctx.channel.id !=829319368038285322:
+            return await ctx.send("Wrong channel please use <#829319368038285322> for /trivia",hidden=True)
         x = requests.get("https://opentdb.com/api.php?amount=1")
         trivia = x.json()
         question = trivia["results"][0]
@@ -102,7 +106,7 @@ class games(commands.Cog):
         name="topic",
         description="Are you bored? Lets play some trivia!",
 
-        guild_ids=[709424743174111343],
+        guild_ids=[720657696407420950],
         options=[
             create_option(
                 name="topic",
@@ -213,6 +217,8 @@ class games(commands.Cog):
     )
     @commands.cooldown(1, 30, commands.BucketType.guild)
     async def _topics(self, ctx, topic: str = None):
+        if ctx.channel.id !=829319368038285322:
+            return await ctx.send("Wrong channel please use <#829319368038285322> for /trivia",hidden=True)
         if not topic:
             embed = discord.Embed(title="**TRIVIA TIME!: Topics**", color=discord.Color.orange())
             embed.add_field(name="\u200b",

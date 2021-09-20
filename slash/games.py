@@ -337,5 +337,5 @@ class games(commands.Cog):
 
 
 def setup(client):
-    print("Loaded Slash")
+    print("Loaded Games")
     client.add_cog(games(client))

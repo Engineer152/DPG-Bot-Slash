@@ -243,7 +243,12 @@ class utils(commands.Cog):
         await suggest.add_reaction("👍")
         await suggest.add_reaction("👎")
 
-
+    @_suggest.error
+    @_suggestsong.error
+    @_poll.error
+    @_welcome.error
+    async def utils_error(self,ctx,error):
+        print(error)
 def setup(client):
     print("Loaded Utils")
     client.add_cog(utils(client))

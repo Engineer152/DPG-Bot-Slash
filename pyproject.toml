@@ -6,10 +6,7 @@ authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-discord = "^1.0.1"
-flask = "^2.0.0"
-"discord.py" = "^1.7.2"
-discord-py-slash-command = "^2.0.4"
+"discord" = {git = "https://github.com/ironman9356/discord.py"}
 
 [tool.poetry.dev-dependencies]
 

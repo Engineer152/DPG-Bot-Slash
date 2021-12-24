@@ -3,7 +3,6 @@ from discord.ext import commands
 import os
 import keep_alive
 
-
 intents = discord.Intents.all()
 bot = commands.Bot(
     command_prefix=".",
@@ -34,6 +33,16 @@ for filename in os.listdir('./slash'):
 
 keep_alive.keep_alive()
 token = os.getenv("TOKEN")
+
+
+@bot.slash_command_check_once
+async def blacklist(ctx):
+    roles = []
+    for i in ctx.author.roles:
+        roles.append(i.id)
+    if 788494319459500042 in roles:
+        return False
+
 
 print(f"DPG Bot Py is Live!\ndiscord.py version {discord.__version__}\n")
 

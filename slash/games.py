@@ -15,6 +15,29 @@ def convert(seconds):
     return f'{minutes} minutes {seconds} seconds'
 
 
+def rng():
+    x = random.randint(0, 1000)
+    y = random.randint(0, 1000)
+    if 0 < x <= 250:
+        dmg = random.randint(30, 40)
+        return dmg
+    elif 251 <= x <= 500:
+        dmg = random.randint(20, 30)
+        return dmg
+    elif 501 <= x <= 750:
+        dmg = random.randint(10, 20)
+        return dmg
+    elif x == 500 or x == 0:
+        dmg = random.randint(40, 50)
+        return dmg
+    elif x == 1000 and y == 1000:
+        dmg = 100
+        return dmg
+    else:
+        dmg = random.randint(1, 10)
+        return dmg
+
+
 class games(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -247,17 +270,158 @@ class games(commands.Cog):
         ]
         return [topic for topic in topics if user_input in topic.lower()]
 
+    @commands.slash_command(name="battle", description="Battle your friends for the trophy!",
+                            guild_ids=[720657696407420950])
+    @commands.cooldown(8, 28800, commands.BucketType.member)
+    async def _battle(self, ctx,
+                      member1: discord.Member = commands.Param(description="The first member", default=False),
+                      member2: discord.Member = commands.Param(description="The second member", default=False)):
+        if ctx.channel.id != 758297067155488799:
+            return await ctx.response.send_message("Wrong channel\nPlease use <#758297067155488799>", ephemeral=True)
+
+        member_life = 100
+        user_life = 100
+
+        user = member1
+        member = member2
+        if not member and not user:
+            user = ctx.author
+            member = self.bot.user
+        if not member:
+            member = member1
+            user = ctx.author
+        if not user:
+            user = ctx.author
+            member = self.bot.user
+
+        if member.id == user.id:
+            if self._battle.get_cooldown_retry_after(ctx) == 0.0:
+                pass
+            else:
+                self._battle.reset_cooldown(ctx)
+            return await ctx.response.send_message("Two same people can't battle each other lol ", ephemeral=True)
+        if member.bot and member != self.bot.user:
+            if self._battle.get_cooldown_retry_after(ctx) == 0.0:
+                pass
+            else:
+                self._battle.reset_cooldown(ctx)
+            return await ctx.response.send_message("No battling with other bots", ephemeral=True)
+
+        if user.bot and member != self.bot.user:
+            if self._battle.get_cooldown_retry_after(ctx) == 0.0:
+                pass
+            else:
+                self._battle.reset_cooldown(ctx)
+            return await ctx.response.send_message("No battling with other bots", ephemeral=True)
+        round = 0
+        embed = discord.Embed(title=':basketball: TRICKSHOT BATTLE :football:', color=0xd92c43,
+                              description='*Match starting in 3...*')
+        embed.add_field(name=f'{member.name}', value=f'{member_life}/100', inline=True)
+        embed.add_field(name=f'{user.name}', value=f'{user_life}/100')
+        await ctx.response.send_message(embed=embed)
+        await asyncio.sleep(3)
+        embed.clear_fields()
+        embed1 = discord.Embed(title=':basketball: TRICKSHOT BATTLE :football:', color=0xd92c43)
+        embed1.add_field(name=f'{member.name}', value=f'{member_life}/100', inline=True)
+
+        embed1.add_field(name=f"{user.name}", value=f"{user_life}/100", inline=True)
+
+        await ctx.edit_original_message(embed=embed1)
+        round = round + 1
+        x = rng()
+        embed1.insert_field_at(0,
+                               value=f':arrow_left: **{ctx.author.name}** did a trickshot against **{member.name}**, '
+                                     f'They scored __{x}__ points!',
+                               name=f"ROUND {round}", inline=False)
+        member_life = member_life - x
+        embed1.set_field_at(-2, name=f'{member.name}', value=f'{member_life}/100', inline=True)
+
+        await ctx.edit_original_message(embed=embed1)
+        await asyncio.sleep(2)
+        round = round + 1
+        y = rng()
+        embed1.insert_field_at(1,
+                               value=f':arrow_right: **{member.name}** did a trickshot against **{user.name}**, '
+                                     f'They scored __{y}__ points!',
+                               name=f"ROUND {round}", inline=False)
+        user_life = user_life - y
+        embed1.set_field_at(-1, name=f"{ctx.author.name}", value=f"{user_life}/100", inline=True)
+        await asyncio.sleep(2)
+        await ctx.edit_original_message(embed=embed1)
+        round += 1
+        z = rng()
+        embed1.insert_field_at(2,
+                               value=f':arrow_left: **{user.name}** did a trickshot against **{member.name}**, '
+                                     f'They scored __{z}__ points!',
+                               name=f"ROUND {round}", inline=False)
+        member_life = member_life - x
+        embed1.set_field_at(-2, name=f'{member.name}', value=f'{member_life}/100', inline=True)
+        await asyncio.sleep(2)
+        await ctx.edit_original_message(embed=embed1)
+        while member_life >= 0 or user_life >= 0:
+            round += 1
+            y = rng()
+            embed1.remove_field(0)
+            embed1.insert_field_at(2,
+                                   value=f':arrow_right: **{member.name}** did a trickshot agai'
+                                         f'nst **{user.name}**, They scored __{y}__ points!',
+                                   name=f"ROUND {round}", inline=False)
+            user_life = user_life - y
+            if user_life <= 0:
+                user_life = 0
+            embed1.set_field_at(-1, name=f"{user.name}", value=f"{user_life}/100", inline=True)
+            await asyncio.sleep(2)
+            await ctx.edit_original_message(embed=embed1)
+
+            if user_life <= 0:
+                embed1.remove_field(0)
+                embed1.insert_field_at(2,
+                                       value=f':trophy: **{member.name}** has won!',
+                                       name="WINNER", inline=False)
+                await ctx.edit_original_message(embed=embed1)
+                break
+            round += 1
+
+            embed1.remove_field(0)
+            x = rng()
+            embed1.insert_field_at(2,
+                                   value=f':arrow_left: **{user.name}** did a trickshot agai'
+                                         f'nst **{member.name}**, They scored __{x}__ points!',
+                                   name=f"ROUND {round}", inline=False)
+            member_life = member_life - x
+            if member_life <= 0:
+                member_life = 0
+            embed1.set_field_at(-2, name=f'{member.name}', value=f'{member_life}/100', inline=True)
+            await asyncio.sleep(2)
+            await ctx.edit_original_message(embed=embed1)
+            if member_life <= 0:
+                embed1.remove_field(0)
+                embed1.insert_field_at(2,
+                                       value=f':trophy: **{user.name}** has won!',
+                                       name="WINNER", inline=False)
+                await ctx.edit_original_message(embed=embed1)
+                break
+
+        message = await ctx.original_message()
+        await message.add_reaction('<:GG:811602518764814376>')
+
     @_trivia.error
     async def _trivia_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             try:
                 await ctx.response.send_message(
-                f":warning: You Cannot play trivia for another: {convert(int(error.retry_after))}.",
-                ephemeral=True)
+                    f":warning: You Cannot play trivia for another: {convert(int(error.retry_after))}.",
+                    ephemeral=True)
             except discord.InteractionResponded:
                 pass
         else:
             print("error: ", error)
+
+    @_battle.error
+    async def battle_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            return await ctx.response.send_message(
+                f"{ctx.author.display_name} :warning: You cannot battle for another: {convert(int(error.retry_after))}.")
 
 
 def setup(bot):

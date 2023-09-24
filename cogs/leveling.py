@@ -5,6 +5,7 @@ import pymongo
 from pymongo import MongoClient
 import random, math
 import os
+from dotenv import load_dotenv
 from easy_pil import Editor, load_image_async, Font, Text
 import aiohttp
 """
@@ -24,7 +25,7 @@ xpnxtlevl = (100*nxtlevel*nxtlevel)-(100*level*level)
 xpnxtlevl
 """
 # https://github.com/Sitiaro/Discord.py/blob/main/levels.py
-
+load_dotenv()
 # BOT DEV SERVER STUFF
 bot_channel = 756175869437018165
 talk_channels = [

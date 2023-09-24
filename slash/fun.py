@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+import asyncio
 
 
 def convert(seconds):
@@ -27,7 +28,7 @@ class fun(commands.Cog):
                        description="This person is sus", default=False)):
         if not member:
             member = ctx.author
-        if ctx.channel.id != 759526501598101506:
+        if ctx.channel.id != 758297067155488799:
             self.vote.reset_cooldown(ctx)
             return await ctx.response.send_message(
                 "You can't use this here try it in <#759526501598101506>",
@@ -46,7 +47,7 @@ class fun(commands.Cog):
     @commands.slash_command(description="Call an emergency meeting",
                             guild_ids=[720657696407420950])
     async def button(self, ctx, *, txt=None):
-        if ctx.channel.id != 759526501598101506:
+        if ctx.channel.id != 758297067155488799:
             self.vote.reset_cooldown(ctx)
             return await ctx.response.send_message(
                 "You can't use this here try it in <#759526501598101506>",
@@ -71,6 +72,8 @@ class fun(commands.Cog):
                 return await ctx.response.send_message("That member isnt in the server", ephemeral=True)
             except discord.InteractionResponded:
                 pass
+        else:
+            print(error)
 
     @commands.slash_command(
         name="bottlebust",
@@ -146,7 +149,7 @@ class fun(commands.Cog):
         embed.add_field(name='SEE YA!! :v:', value='\u200b', inline=False)
         embed.add_field(name=':billed_cap:     :arrow_right:     :movie_camera:', value='\u200b', inline=False)
         embed.set_image(
-            url="http://media.discordapp.net/attachments/821907733434597386/824039035424866344/giphy-downsized-medium.gif")
+            url="https://media.giphy.com/media/26AHrjvalgkgrhPFu/giphy.gif")
         await ctx.response.send_message(embed=embed)
         message = await ctx.original_message()
         await message.add_reaction('\U0001f44b')
@@ -190,6 +193,15 @@ class fun(commands.Cog):
                 content="Error! Your DM's (Direct Message's) are closed so I couldn't send you the message ")
         await ctx.edit_original_message(
             content=f"[Click here to view your mail :mailbox:]({message.jump_url})")
+    
+    @commands.slash_command(description="RIP", name="rip",
+                            guild_ids=[720657696407420950])
+    async def _rip(self, ctx):
+        embed = discord.Embed(title='rip...')
+        embed.set_image(
+            url='https://media.tenor.com/8DrchXOSGJAAAAAd/dude-perfect-dude-perfect-rip.gif'
+        )
+        await ctx.response.send_message(embed=embed)
 
 def setup(bot):
     print("Loaded Fun")

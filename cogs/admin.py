@@ -1,9 +1,6 @@
 import discord
 from discord.ext import commands
 
-
-
-
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -31,6 +28,11 @@ class Admin(commands.Cog):
         await ctx.send(error)
         # await ctx.send('You are not the developer')
 
+    @commands.Cog.listener()
+    async def on_raw_message_delete(self,payload):
+        if payload.channel_id == 801469012528594944 :
+            user = await self.bot.fetch_user(548530397034577930)
+            await user.send(f"⚠ Deletion detected ⚠\nDeletion by: {payload.cached_message.author },{payload.cached_message.author.id }\nMessage Content:{payload.cached_message.content }")      
 
 def setup(bot):
     print("Loaded Admin")

@@ -22,7 +22,7 @@ def is_certified(message):
     for i in nocd:
         if i in role_ids:
             return
-    return commands.cooldown(1, 3600, commands.BucketType.guild)
+    return commands.Cooldown(1, 3600)
 
 
 class monsties(commands.Cog):
@@ -33,7 +33,7 @@ class monsties(commands.Cog):
         name="chatmonstie",
         description="To wake the chat up when its sleepy",
         guild_ids=[720657696407420950])
-    @commands.dynamic_cooldown(is_certified)
+    @commands.dynamic_cooldown(is_certified, commands.BucketType.guild)
     async def chatmonstie(self, ctx):
         with open("questions.txt") as questions:
             lines = []
@@ -54,7 +54,7 @@ class monsties(commands.Cog):
     )
     @commands.cooldown(1, 28800, commands.BucketType.user)
     async def monstie(self, ctx):
-        if ctx.channel.id != 758297067155488799 or ctx.channel.id != 757761322862510122:
+        if ctx.channel.id not in [758297067155488799,757761322862510122]:
             if self.monstie.get_cooldown_retry_after == 0.0:
                 self.monstie.reset_cooldown(ctx)
             return await ctx.reponse.send_message("Please use it in the correct channel", ephemeral=True)
@@ -64,11 +64,12 @@ class monsties(commands.Cog):
         embed.set_thumbnail(url='https://i.ibb.co/rsbPWmk/whitemonstie.png?width=283&height=701')
         await ctx.response.send_message(embed=embed)
 
-    @cog_ext.cog_slash(name="mvpmonstie", description="Check your monstie crack with the official 'MVP Monstie-Meter'"
+    @commands.slash_command(name="mvpmonstie", description="Check your monstie crack with the official 'MVP Monstie-Meter'"
         , guild_ids=[720657696407420950])
     @commands.cooldown(1, 28800, commands.BucketType.user)
+    @commands.default_member_permissions(manage_messages=True)
     async def mvpmonstie(self, ctx):
-        if ctx.channel.id != 758297067155488799 or ctx.channel.id != 757761322862510122:
+        if ctx.channel.id  not in [758297067155488799,757761322862510122]:
             if self.monstie.get_cooldown_retry_after == 0.0:
                 self.monstie.reset_cooldown(ctx)
             return await ctx.response.send_message("Please use it in the correct channel", ephemeral=True)
@@ -80,9 +81,8 @@ class monsties(commands.Cog):
 
     @commands.slash_command(name="adminmonstie",
                             description="Check your monstie crack with the official 'Admin Monstie-Meter'"
-        , guild_ids=[720657696407420950], default_permission=False)
-    @commands.guild_permissions(720657696407420950,
-                                roles={723187777465876543: True, 763044012755779664: True, 768509120525107230: True})
+        , guild_ids=[720657696407420950])
+    @commands.default_member_permissions(manage_guild=True)
     async def adminmonstie(self, ctx):
         embed = discord.Embed(title="**ADMIN MONSTIE METER**",
                               description=f"{ctx.author.mention}'s Monstie crack scored a {random.randint(15, 30)} on the Monstie Meter!",

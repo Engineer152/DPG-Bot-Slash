@@ -102,7 +102,7 @@ async def on_slash_command_error(ctx,error):
 print(f"DPG Bot Py is Live!\ndiscord.py version {discord.__version__}\n")
 
 try:
-    bot.run('NzU2MTgyODcxNTgwMDgyMzA5.X2OILQ.Giqe-fK-RpYDEhcn8joqQC-lGHs')
+    bot.run(token)
     #bot.run(token) # Replace this with your usual `bot.run` line
 except discord.HTTPException as err:
     if err.status == 429:

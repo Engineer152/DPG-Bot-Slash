@@ -8,6 +8,8 @@ import os
 from dotenv import load_dotenv
 from easy_pil import Editor, load_image_async, Font, Text
 import aiohttp
+import dns
+
 """
 LEVEL FORMULA FROM XP
 import math

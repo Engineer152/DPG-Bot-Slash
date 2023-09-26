@@ -164,35 +164,35 @@ class fun(commands.Cog):
                               color=0x46e2ec)
         await ctx.response.send_message(embed=embed)
 
-    @commands.slash_command(description="Come join the DPG Minecraft Community Server!", name="minecraftserver",
-                            guild_ids=[720657696407420950])
-    async def _minecraftserver(self, ctx):
-        embed = discord.Embed(title="DPG MINECRAFT SERVER",
-                              description="Below you can find information on how to connect to the official: **DPG "
-                                          "Minecraft Server**",
-                              color=0x46e2ec)
-        embed.add_field(name="__Supported Consoles:__",
-                        value="- Java Version\n- Windows 10 Bedrock\n- Xbox\n- Nintendo Switch\n- Android or Iphone",
-                        inline=False)
-        embed.add_field(name="__IP Address:__",
-                        value="IP Address: dpgaming.serveminecraft.net\n**NOTE: the address is 'serve' NOT "
-                              "'server'**\nPort: 25565\n\nPlease watch the following instructional video for "
-                              "connecting to the DPG Minecraft Server: [HOW TO]("
-                              "https://www.youtube.com/watch?v=hnO1PFVvbmI)\nIf you ever need any help at all please "
-                              "go to the #minecraft channel in [DPG Nation server](https://discord.gg/A68YFtC). You "
-                              "may ping @Minecraft Mod at any time. This is a cross platform server between all "
-                              "devices that are currently available above. If you are on Bedrock Edition you will be "
-                              "marked with 'BR_' to indicate your a bedrock player playing on our Java "
-                              "Server.\n\nUnfortunately you will not be able to use custom skins if you are on "
-                              "Bedrock. We will keep you updated on any changes in the future.")
-        await ctx.response.send_message(":mailbox: You've Got Mail!", ephemeral=True)
-        try:
-            message = await ctx.author.send(embed=embed)
-        except discord.Forbidden:
-            return await ctx.edit_original_message(
-                content="Error! Your DM's (Direct Message's) are closed so I couldn't send you the message ")
-        await ctx.edit_original_message(
-            content=f"[Click here to view your mail :mailbox:]({message.jump_url})")
+#    @commands.slash_command(description="Come join the DPG Minecraft Community Server!", name="minecraftserver",
+#                            guild_ids=[720657696407420950])
+#    async def _minecraftserver(self, ctx):
+#        embed = discord.Embed(title="DPG MINECRAFT SERVER",
+#                              description="Below you can find information on how to connect to the official: **DPG "
+#                                          "Minecraft Server**",
+#                              color=0x46e2ec)
+#        embed.add_field(name="__Supported Consoles:__",
+#                        value="- Java Version\n- Windows 10 Bedrock\n- Xbox\n- Nintendo Switch\n- Android or Iphone",
+#                        inline=False)
+#        embed.add_field(name="__IP Address:__",
+#                        value="IP Address: dpgaming.serveminecraft.net\n**NOTE: the address is 'serve' NOT "
+#                              "'server'**\nPort: 25565\n\nPlease watch the following instructional video for "
+#                              "connecting to the DPG Minecraft Server: [HOW TO]("
+#                              "https://www.youtube.com/watch?v=hnO1PFVvbmI)\nIf you ever need any help at all please "
+#                              "go to the #minecraft channel in [DPG Nation server](https://discord.gg/A68YFtC). You "
+#                              "may ping @Minecraft Mod at any time. This is a cross platform server between all "
+#                              "devices that are currently available above. If you are on Bedrock Edition you will be "
+#                              "marked with 'BR_' to indicate your a bedrock player playing on our Java "
+#                              "Server.\n\nUnfortunately you will not be able to use custom skins if you are on "
+#                              "Bedrock. We will keep you updated on any changes in the future.")
+#        await ctx.response.send_message(":mailbox: You've Got Mail!", ephemeral=True)
+#        try:
+#            message = await ctx.author.send(embed=embed)
+#        except discord.Forbidden:
+#            return await ctx.edit_original_message(
+#                content="Error! Your DM's (Direct Message's) are closed so I couldn't send you the message ")
+#        await ctx.edit_original_message(
+#            content=f"[Click here to view your mail :mailbox:]({message.jump_url})")
     
     @commands.slash_command(description="RIP", name="rip",
                             guild_ids=[720657696407420950])

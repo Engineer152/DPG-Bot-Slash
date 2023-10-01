@@ -3,8 +3,7 @@ import discord
 from discord.ext import commands
 import pymongo
 from pymongo import MongoClient
-import random
-import math
+import random, math
 import os
 from dotenv import load_dotenv
 from easy_pil import Editor, load_image_async, Font, Text
@@ -38,14 +37,14 @@ talk_channels = [
 ]  # ID's of every channel wherein you want the bot to allot xp to a user
 levels = [5, 10, 15, 30, 40, 50, 75, 100]
 level = {
-    5: 768193676055805962,
-    10: 768193781220507739,
-    15: 768193866003513416,
-    30: 768194080383041536,
-    40: 768194218409459723,
-    50: 768194316798525480,
-    75: 768194450618318848,
-    100: 768194973551820861
+    5:768193676055805962,
+    10:768193781220507739,
+    15:768193866003513416,
+    30:768194080383041536,
+    40:768194218409459723,
+    50:768194316798525480,
+    75:768194450618318848,
+    100:768194973551820861
 }
 # you can have as many levels as you like
 # OLD f"mongodb+srv://dpgbot:{password}@dpgbot.vo3ed.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
@@ -56,8 +55,6 @@ cluster = MongoClient(
 )
 collection_name = cluster["Servers"]
 print(collection_name.list_collection_names())
-
-
 class levelsys(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -77,15 +74,15 @@ class levelsys(commands.Cog):
             return
         # if message.channel.id not in talk_channels:
         #     return
-        if message.channel.id == 801469012528594944:
+        if message.channel.id == 801469012528594944 :
             return
-        if message.content.strip().count("░") > 50:
-            await message.reply("Please avoid spamming in the server", delete_after=5, allowed_mentions=discord.AllowedMentions.none())
+        if message.content.strip().count("░")>50:
+            await message.reply("Please avoid spamming in the server",delete_after=5,allowed_mentions=discord.AllowedMentions.none())
             await message.delete()
             return
         retry_after = self.ratelimit_check(message)
         if not retry_after:
-
+            
             guild_id = str(message.guild.id)
             server_cluster = collection_name[guild_id]
             stats = server_cluster.find_one({"id": message.author.id})
@@ -99,11 +96,12 @@ class levelsys(commands.Cog):
                 server_cluster.insert_one(newuser)
             else:
                 inc = random.randint(30, 50)
-                inc = inc * 1  # multiplier setter for events
                 xp = stats["xp"]
                 server_cluster.update_one({"id": message.author.id}, {
                     "$set": {
-                        "xp": xp + inc
+                        "xp": xp + inc,
+                        "user": message.author.display_name,
+                        "avatar": message.author.display_avatar.url
                     }
                 })
 
@@ -114,10 +112,12 @@ class levelsys(commands.Cog):
                 if ((xp - (100 * lvl * lvl)) + inc) >= xpnxtlevl:
                     embed = discord.Embed(
                         title="🏆 LEVEL UP! 🎉",
-                        description=f"Congratulations **{message.author}**!\nYou've leveled up to level **{nlvl}** 🎉 - You've made Ned proud!!",
+                        description=
+                        f"Congratulations **{message.author}**!\nYou've leveled up to level **{nlvl}** 🎉 - You've made Ned proud!!",
                         color=0xd72f45)
                     embed.set_image(
-                        url="https://media.giphy.com/media/3gWZiTb8Y16UyqIA80/giphy.gif"
+                        url=
+                        "https://media.giphy.com/media/3gWZiTb8Y16UyqIA80/giphy.gif"
                     )
                     if message.guild.id == 720657696407420950:
                         channel = await self.bot.fetch_channel(720657696872726530)
@@ -126,18 +126,17 @@ class levelsys(commands.Cog):
                     await channel.send(message.author.mention, embed=embed)
                     for i in message.author.roles:
                         if i.name.startswith("Level"):
-                            role = int(i.name.split("Level")
-                                       [-1].split("+:")[0])
+                            role = int(i.name.split("Level")[-1].split("+:")[0])
                             for v in range(len(levels)):
                                 if role == levels[v]:
                                     next = levels[v+1]
-                            if next == nlvl:
+                            if next == nlvl :
                                 for lvls in range(len(levels)):
                                     if role == levels[lvls]:
                                         toadd = levels[lvls+1]
                                 await message.author.remove_roles(i, reason="Level up")
                                 await message.author.add_roles(discord.Object(
-                                    id=level[toadd]), reason="Level up")
+                                    id=level[toadd]),reason="Level up")
                             else:
                                 continue
                     if nlvl == 5:
@@ -147,20 +146,14 @@ class levelsys(commands.Cog):
         else:
             return
 
-    @commands.group(aliases=['xp', "level", "lvl"],
+    @commands.group(aliases=['xp',"level","lvl"],
                     case_insensitive=True,
                     invoke_without_command=True)
-    async def rank(self, ctx: commands.Context, member: discord.Member = None):
-        if ctx.channel.id not in [758297067155488799, 756175869437018165]:
+    async def rank(self, ctx, member: discord.Member = None):
+        if ctx.channel.id not in [758297067155488799,756175869437018165] :
             return
         if not member:
             member = ctx.author
-            server_cluster.update_one({"id": member.id}, {
-                "$set": {
-                    "user": member.display_name,
-                    "avatar": member.display_avatar.url
-                }
-            })
         guild_id = str(ctx.guild.id)
         server_cluster = collection_name[guild_id]
         stats = server_cluster.find_one({"id": member.id})
@@ -174,7 +167,7 @@ class levelsys(commands.Cog):
             lvl = math.floor(0.1 * math.sqrt(xp))
             nlvl = lvl + 1
             rank = 0
-            people = []
+            people=[]
             for i in ctx.guild.members:
                 people.append(i.display_name)
             xpnxtlvl = (100 * nlvl * nlvl) - (100 * lvl * lvl)
@@ -190,8 +183,7 @@ class levelsys(commands.Cog):
                 math.floor(((xp - 100 * lvl * lvl) / xpnxtlvl) * 100) / 10)
 
             if f"{member.id}.png" in os.listdir(f"background/{ctx.guild.id}"):
-                background = Editor(
-                    f"background/{ctx.guild.id}/{member.id}.png")
+                background = Editor(f"background/{ctx.guild.id}/{member.id}.png")
             else:
                 background = Editor(f"background/{ctx.guild.id}/default.png")
             background.resize((934, 282))
@@ -205,8 +197,7 @@ class levelsys(commands.Cog):
 
             # background.rectangle((20, 20), 894, 242, "#2a2e35")
             background.paste(profile, (30, 50))
-            background.ellipse((25, 42), width=206, height=206,
-                               outline=member.color.to_rgb(), stroke_width=10)
+            background.ellipse((25, 42), width=206, height=206, outline=member.color.to_rgb(), stroke_width=10)
             background.rectangle((260, 180),
                                  width=630,
                                  height=40,
@@ -244,14 +235,14 @@ class levelsys(commands.Cog):
                                        align="right")
             file = discord.File(fp=background.image_bytes, filename="card.png")
             await ctx.send(file=file)
-
+            
     @rank.error
-    async def rankerror(self, ctx: commands.Context, error):
+    async def rankerror(self,ctx,error):
         print(error)
-
-    @rank.command(name="set-background", aliases=["set-bg", "bg-set"])
-    @commands.has_any_role(778822337503690762, 757760951620468817, 723187777465876543, 763044012755779664, 768509120525107230)
-    async def setbg(self, ctx: commands.Context, link: str = None):
+    
+    @rank.command(name="set-background", aliases=["set-bg","bg-set"])
+    @commands.has_any_role(778822337503690762,757760951620468817,723187777465876543,763044012755779664,768509120525107230)
+    async def setbg(self, ctx, link: str = None):
         if not link and ctx.message.attachments:
             link = ctx.message.attachments[0].url
         if not link:
@@ -271,15 +262,15 @@ class levelsys(commands.Cog):
 
     # Leaderboard
     @setbg.error
-    async def setbgerror(self, ctx: commands.Context, error):
+    async def setbgerror(self, ctx, error):
         if isinstance(error, commands.MissingRole):
             return await ctx.send(
                 "You need the `@MVP` role or above to change your background")
         print(error, type(error))
 
-    @rank.command(name="remove-background", aliases=["remove-bg", "bg-remove"])
-    @commands.has_any_role(778822337503690762, 757760951620468817, 723187777465876543, 763044012755779664, 768509120525107230)
-    async def rmbg(self, ctx: commands.Context):
+    @rank.command(name="remove-background", aliases=["remove-bg","bg-remove"])
+    @commands.has_any_role(778822337503690762,757760951620468817,723187777465876543,763044012755779664,768509120525107230)
+    async def rmbg(self, ctx):
         if f"{ctx.author.id}.png" in os.listdir("background"):
             os.remove(f"background/{ctx.guild.id}/{ctx.author.id}.png")
             return await ctx.send("Your BG has been set to default")
@@ -287,19 +278,19 @@ class levelsys(commands.Cog):
             return await ctx.send("You dont have a backgorund set")
 
     @rmbg.error
-    async def rmbgerror(self, ctx: commands.Context, error):
+    async def rmbgerror(self, ctx, error):
         if isinstance(error, commands.MissingRole):
             return await ctx.send(
                 "You need the `@MVP` role or above to change your background")
         print(error, type(error))
 
     @commands.command(aliases=['lb'])
-    async def leaderboard(self, ctx: commands.Context, page: int = 1):
+    async def leaderboard(self, ctx, page: int = 1):
         guild_id = str(ctx.guild.id)
         server_cluster = collection_name[guild_id]
         rankings = server_cluster.find().sort("xp", pymongo.DESCENDING)
         members = ctx.guild.members
-        people = []
+        people=[]
         for i in ctx.guild.members:
             people.append(i.display_name)
         names = []
@@ -315,7 +306,7 @@ class levelsys(commands.Cog):
 
         for i in rankings:
             if i["user"] == "#" or not i['avatar'] or i["user"] not in people:
-                continue
+                    continue
             tempxp = i["xp"]
             if i['user'] in names:
                 try:
@@ -342,7 +333,7 @@ class levelsys(commands.Cog):
 
     @rank.error
     @leaderboard.error
-    async def leveling_error(self, ctx: commands.Context, error):
+    async def leveling_error(self, ctx, error):
         await ctx.send("An error has occured please try again later")
 
     # @commands.command()
@@ -363,8 +354,6 @@ class levelsys(commands.Cog):
     #       server_cluster.insert_one(newuser)
 
 # setting up cogs
-
-
 def setup(client):
     print("Loaded Leveling")
     client.add_cog(levelsys(client))

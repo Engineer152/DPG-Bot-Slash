@@ -70,7 +70,7 @@ class levelsys(commands.Cog):
         return bucket.update_rate_limit()
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         if message.author.bot:
             return
         if not message.guild:
@@ -103,7 +103,9 @@ class levelsys(commands.Cog):
                 xp = stats["xp"]
                 server_cluster.update_one({"id": message.author.id}, {
                     "$set": {
-                        "xp": xp + inc
+                        "xp": xp + inc,
+                        "user": message.author.display_name,
+                        "avatar": message.author.display_avatar.url
                     }
                 })
 
@@ -155,12 +157,6 @@ class levelsys(commands.Cog):
             return
         if not member:
             member = ctx.author
-            server_cluster.update_one({"id": member.id}, {
-                "$set": {
-                    "user": member.display_name,
-                    "avatar": member.display_avatar.url
-                }
-            })
         guild_id = str(ctx.guild.id)
         server_cluster = collection_name[guild_id]
         stats = server_cluster.find_one({"id": member.id})
@@ -343,6 +339,8 @@ class levelsys(commands.Cog):
     @rank.error
     @leaderboard.error
     async def leveling_error(self, ctx: commands.Context, error):
+        ironman = await ctx.guild.fetch_member(548530397034577930)
+        await ironman.send(error)
         await ctx.send("An error has occured please try again later")
 
     # @commands.command()

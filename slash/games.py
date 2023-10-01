@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import asyncio
-import requests, html
+import requests
+import html
 import random
 
 
@@ -44,11 +45,12 @@ def rng():
         return dmg
 
 
-def data(category:int=None):
+def data(category: int = None):
 
     x = requests.get("https://opentdb.com/api.php?amount=1&type=multiple")
-    if category :
-        x = requests.get(f"https://opentdb.com/api.php?amount=1&category={int(category) + 8}&type=multiple")
+    if category:
+        x = requests.get(
+            f"https://opentdb.com/api.php?amount=1&category={int(category) + 8}&type=multiple")
     trivia = x.json()
     question = trivia["results"][0]
     category = question["category"]
@@ -136,12 +138,12 @@ class games(commands.Cog):
         guild_ids=[720657696407420950])
     @commands.cooldown(1, 30, commands.BucketType.channel)
     async def _trivia(self,
-                      ctx,
+                      interaction: discord.CommandInteraction,
                       topic: str = commands.Param(
                           description="Choose a specific topic!",
                           default=False)):
-        if ctx.channel.id != 829319368038285322:
-            return await ctx.response.send_message(
+        if interaction.channel.id != 829319368038285322:
+            return await interaction.response.send_message(
                 "Wrong channel please use <#829319368038285322> for /trivia",
                 ephemeral=True)
         if not topic:
@@ -160,8 +162,8 @@ class games(commands.Cog):
                 f"15s to click/tap on the correct button**__",
                 color=discord.Color.random())
             embed.set_thumbnail(url="https://i.ibb.co/x6dhj1m/trivia.png")
-            await ctx.response.send_message(embed=embed, view=trivia)
-            message = await ctx.original_message()
+            await interaction.response.send_message(embed=embed, view=trivia)
+            message = await interaction.original_message()
             await trivia.wait()
             if not trivia.value:
                 trivia.option1.disabled = True
@@ -177,8 +179,7 @@ class games(commands.Cog):
                 embed.set_thumbnail(url="https://i.ibb.co/x6dhj1m/trivia.png")
                 await message.edit(embed=embed, view=trivia)
                 embed = discord.Embed(
-                    description=
-                    f"Time up!\nCorrect answer is `{trivia.answer}`\nNo one answered",
+                    description=f"Time up!\nCorrect answer is `{trivia.answer}`\nNo one answered",
                     color=discord.Color.red())
                 await message.reply(embed=embed)
                 return
@@ -203,8 +204,7 @@ class games(commands.Cog):
 
                 await message.edit(embed=embed, view=trivia)
                 embed = discord.Embed(
-                    description=
-                    f"**Time up!**\nCorrect answer is `{trivia.answer}`\nThe people who got it correct are:\n{correct_user.strip()}",
+                    description=f"**Time up!**\nCorrect answer is `{trivia.answer}`\nThe people who got it correct are:\n{correct_user.strip()}",
                     color=discord.Color.green())
                 await message.reply(embed=embed)
 
@@ -219,8 +219,7 @@ class games(commands.Cog):
 
                 await message.edit(embed=embed, view=trivia)
                 embed = discord.Embed(
-                    description=
-                    f"**Time up!**\nCorrect answer is `{trivia.answer}`\nNo one got it right",
+                    description=f"**Time up!**\nCorrect answer is `{trivia.answer}`\nNo one got it right",
                     color=discord.Color.red())
                 await message.reply(embed=embed)
 
@@ -261,7 +260,7 @@ class games(commands.Cog):
                                             24. Entertainment: Cartoon & Animations
                                             """)
                 embed.set_thumbnail(url="https://i.ibb.co/x6dhj1m/trivia.png")
-                await ctx.response.send_message(embed=embed)
+                await interaction.response.send_message(embed=embed)
             else:
                 num = topic.split(".")[0]
                 x = data(num)
@@ -279,8 +278,8 @@ class games(commands.Cog):
                     f"15s to click/tap on the correct button**__",
                     color=discord.Color.random())
                 embed.set_thumbnail(url="https://i.ibb.co/x6dhj1m/trivia.png")
-                await ctx.response.send_message(embed=embed, view=trivia)
-                message = await ctx.original_message()
+                await interaction.response.send_message(embed=embed, view=trivia)
+                message = await interaction.original_message()
                 await trivia.wait()
                 if not trivia.value:
                     trivia.option1.disabled = True
@@ -289,8 +288,7 @@ class games(commands.Cog):
                     trivia.option4.disabled = True
                     embed = discord.Embed(
                         title="TRIVIA TIME!",
-                        description=
-                        f"Theme: {x['category'].title()}\nDifficulty: "
+                        description=f"Theme: {x['category'].title()}\nDifficulty: "
                         f"{x['qtype'].title()}\nQuestion: **"
                         f"{x['question']}**\n\n**TIME UP**",
                         color=discord.Color.red())
@@ -298,8 +296,7 @@ class games(commands.Cog):
                         url="https://i.ibb.co/x6dhj1m/trivia.png")
                     await message.edit(embed=embed, view=trivia)
                     embed = discord.Embed(
-                        description=
-                        f"Time up!\nCorrect answer is `{trivia.answer}`\nNo one answered",
+                        description=f"Time up!\nCorrect answer is `{trivia.answer}`\nNo one answered",
                         color=discord.Color.red())
                     await message.reply(embed=embed)
                     return
@@ -316,8 +313,7 @@ class games(commands.Cog):
                 if trivia.users:
                     embed = discord.Embed(
                         title="TRIVIA TIME!",
-                        description=
-                        f"Theme: {x['category'].title()}\nDifficulty: "
+                        description=f"Theme: {x['category'].title()}\nDifficulty: "
                         f"{x['qtype'].title()}\nQuestion: **"
                         f"{x['question']}**",
                         color=discord.Color.green())
@@ -326,16 +322,14 @@ class games(commands.Cog):
 
                     await message.edit(embed=embed, view=trivia)
                     embed = discord.Embed(
-                        description=
-                        f"**Time up!**\nCorrect answer is `{trivia.answer}`\nThe people who got it correct are:\n{correct_user.strip()}",
+                        description=f"**Time up!**\nCorrect answer is `{trivia.answer}`\nThe people who got it correct are:\n{correct_user.strip()}",
                         color=discord.Color.green())
                     await message.reply(embed=embed)
 
                 elif not trivia.users:
                     embed = discord.Embed(
                         title="TRIVIA TIME!",
-                        description=
-                        f"Theme: {x['category'].title()}\nDifficulty:"
+                        description=f"Theme: {x['category'].title()}\nDifficulty:"
                         f" {x['qtype'].title()}\nQuestion: **"
                         f"{x['question']}**",
                         color=discord.Color.red())
@@ -344,8 +338,7 @@ class games(commands.Cog):
 
                     await message.edit(embed=embed, view=trivia)
                     embed = discord.Embed(
-                        description=
-                        f"**Time up!**\nCorrect answer is `{trivia.answer}`\nNo one got it right",
+                        description=f"**Time up!**\nCorrect answer is `{trivia.answer}`\nNo one got it right",
                         color=discord.Color.red())
                     await message.reply(embed=embed)
 
@@ -353,7 +346,7 @@ class games(commands.Cog):
                     await message.reply("error")
 
     @_trivia.autocomplete("topic")
-    async def autocomp_trivia(self, ctx, user_input: str):
+    async def autocomp_trivia(self, interaction, user_input: str):
         topics = [
             "Topics", "1. General Knowledge", "2. Books", "3. Film",
             "4. Music", "5. Musicals & Theatres", "6. Television",
@@ -371,13 +364,13 @@ class games(commands.Cog):
                             guild_ids=[720657696407420950])
     @commands.cooldown(8, 28800, commands.BucketType.member)
     async def _battle(self,
-                      ctx,
+                      interaction: discord.CommandInteraction,
                       member1: discord.Member = commands.Param(
                           description="The first member", default=False),
                       member2: discord.Member = commands.Param(
                           description="The second member", default=False)):
-        if ctx.channel.id != 758297067155488799:
-            return await ctx.response.send_message(
+        if interaction.channel.id != 758297067155488799:
+            return await interaction.response.send_message(
                 "Wrong channel\nPlease use <#758297067155488799>",
                 ephemeral=True)
 
@@ -387,36 +380,36 @@ class games(commands.Cog):
         user = member1
         member = member2
         if not member and not user:
-            user = ctx.author
+            user = interaction.author
             member = self.bot.user
         if not member:
             member = member1
-            user = ctx.author
+            user = interaction.author
         if not user:
-            user = ctx.author
+            user = interaction.author
             member = self.bot.user
 
         if member.id == user.id:
-            if self._battle.get_cooldown_retry_after(ctx) == 0.0:
+            if self._battle.get_cooldown_retry_after(interaction) == 0.0:
                 pass
             else:
-                self._battle.reset_cooldown(ctx)
-            return await ctx.response.send_message(
+                self._battle.reset_cooldown(interaction)
+            return await interaction.response.send_message(
                 "Two same people can't battle each other lol ", ephemeral=True)
         if member.bot and member != self.bot.user:
-            if self._battle.get_cooldown_retry_after(ctx) == 0.0:
+            if self._battle.get_cooldown_retry_after(interaction) == 0.0:
                 pass
             else:
-                self._battle.reset_cooldown(ctx)
-            return await ctx.response.send_message(
+                self._battle.reset_cooldown(interaction)
+            return await interaction.response.send_message(
                 "No battling with other bots", ephemeral=True)
 
         if user.bot and member != self.bot.user:
-            if self._battle.get_cooldown_retry_after(ctx) == 0.0:
+            if self._battle.get_cooldown_retry_after(interaction) == 0.0:
                 pass
             else:
-                self._battle.reset_cooldown(ctx)
-            return await ctx.response.send_message(
+                self._battle.reset_cooldown(interaction)
+            return await interaction.response.send_message(
                 "No battling with other bots", ephemeral=True)
         round = 0
         embed = discord.Embed(title=':basketball: TRICKSHOT BATTLE :football:',
@@ -426,7 +419,7 @@ class games(commands.Cog):
                         value=f'{member_life}/100',
                         inline=True)
         embed.add_field(name=f'{user.name}', value=f'{user_life}/100')
-        await ctx.response.send_message(embed=embed)
+        await interaction.response.send_message(embed=embed)
         await asyncio.sleep(3)
         embed.clear_fields()
         embed1 = discord.Embed(
@@ -439,13 +432,12 @@ class games(commands.Cog):
                          value=f"{user_life}/100",
                          inline=True)
 
-        await ctx.edit_original_message(embed=embed1)
+        await interaction.edit_original_message(embed=embed1)
         round = round + 1
         x = rng()
         embed1.insert_field_at(
             0,
-            value=
-            f':arrow_left: **{ctx.author.name}** did a trickshot against **{member.name}**, '
+            value=f':arrow_left: **{interaction.author.name}** did a trickshot against **{member.name}**, '
             f'They scored __{x}__ points!',
             name=f"ROUND {round}",
             inline=False)
@@ -455,30 +447,28 @@ class games(commands.Cog):
                             value=f'{member_life}/100',
                             inline=True)
 
-        await ctx.edit_original_message(embed=embed1)
+        await interaction.edit_original_message(embed=embed1)
         await asyncio.sleep(2)
         round = round + 1
         y = rng()
         embed1.insert_field_at(
             1,
-            value=
-            f':arrow_right: **{member.name}** did a trickshot against **{user.name}**, '
+            value=f':arrow_right: **{member.name}** did a trickshot against **{user.name}**, '
             f'They scored __{y}__ points!',
             name=f"ROUND {round}",
             inline=False)
         user_life = user_life - y
         embed1.set_field_at(-1,
-                            name=f"{ctx.author.name}",
+                            name=f"{interaction.author.name}",
                             value=f"{user_life}/100",
                             inline=True)
         await asyncio.sleep(2)
-        await ctx.edit_original_message(embed=embed1)
+        await interaction.edit_original_message(embed=embed1)
         round += 1
         z = rng()
         embed1.insert_field_at(
             2,
-            value=
-            f':arrow_left: **{user.name}** did a trickshot against **{member.name}**, '
+            value=f':arrow_left: **{user.name}** did a trickshot against **{member.name}**, '
             f'They scored __{z}__ points!',
             name=f"ROUND {round}",
             inline=False)
@@ -488,7 +478,7 @@ class games(commands.Cog):
                             value=f'{member_life}/100',
                             inline=True)
         await asyncio.sleep(2)
-        await ctx.edit_original_message(embed=embed1)
+        await interaction.edit_original_message(embed=embed1)
         while member_life >= 0 or user_life >= 0:
             round += 1
             y = rng()
@@ -507,7 +497,7 @@ class games(commands.Cog):
                                 value=f"{user_life}/100",
                                 inline=True)
             await asyncio.sleep(2)
-            await ctx.edit_original_message(embed=embed1)
+            await interaction.edit_original_message(embed=embed1)
 
             if user_life <= 0:
                 embed1.remove_field(0)
@@ -516,7 +506,7 @@ class games(commands.Cog):
                     value=f':trophy: **{member.name}** has won!',
                     name="WINNER",
                     inline=False)
-                await ctx.edit_original_message(embed=embed1)
+                await interaction.edit_original_message(embed=embed1)
                 break
             round += 1
 
@@ -536,7 +526,7 @@ class games(commands.Cog):
                                 value=f'{member_life}/100',
                                 inline=True)
             await asyncio.sleep(2)
-            await ctx.edit_original_message(embed=embed1)
+            await interaction.edit_original_message(embed=embed1)
             if member_life <= 0:
                 embed1.remove_field(0)
                 embed1.insert_field_at(
@@ -544,18 +534,18 @@ class games(commands.Cog):
                     value=f':trophy: **{user.name}** has won!',
                     name="WINNER",
                     inline=False)
-                await ctx.edit_original_message(embed=embed1)
+                await interaction.edit_original_message(embed=embed1)
                 break
 
-        message = await ctx.original_message()
+        message = await interaction.original_message()
         # await message.add_reaction('<:GG:811602518764814376>')
         await message.add_reaction('<:GG:1002796083040231474>')
 
     @_trivia.error
-    async def _trivia_error(self, ctx, error):
+    async def _trivia_error(self, interaction: discord.CommandInteraction, error):
         if isinstance(error, commands.CommandOnCooldown):
             try:
-                await ctx.response.send_message(
+                await interaction.response.send_message(
                     f":warning: You Cannot play trivia for another: {convert(int(error.retry_after))}.",
                     ephemeral=True)
             except discord.InteractionResponded:
@@ -564,10 +554,10 @@ class games(commands.Cog):
             print("error: ", error)
 
     @_battle.error
-    async def battle_error(self, ctx, error):
+    async def battle_error(self, interaction: discord.CommandInteraction, error):
         if isinstance(error, commands.CommandOnCooldown):
-            return await ctx.response.send_message(
-                f"{ctx.author.display_name} :warning: You cannot battle for another: {convert(int(error.retry_after))}.", ephemeral = True 
+            return await interaction.response.send_message(
+                f"{interaction.author.display_name} :warning: You cannot battle for another: {convert(int(error.retry_after))}.", ephemeral=True
             )
 
 

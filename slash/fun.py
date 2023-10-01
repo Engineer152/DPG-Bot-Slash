@@ -210,7 +210,7 @@ class fun(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @commands.command(name="rip")
-    async def rip_dash(ctx: commands.Context):
+    async def rip_dash(self,ctx:commands.Context):
         embed = discord.Embed(title='rip...')
         embed.set_image(
             url='https://media.tenor.com/8DrchXOSGJAAAAAd/dude-perfect-dude-perfect-rip.gif'

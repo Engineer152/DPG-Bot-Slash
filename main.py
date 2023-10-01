@@ -40,8 +40,8 @@ for filename in os.listdir('./slash'):
     if filename.endswith('.py'):
         bot.load_extension(f'slash.{filename[:-3]}')
         
-#bot.load_extension('jishaku')
-#os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
+bot.load_extension('jishaku')
+os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 
 @bot.command()
 @commands.has_any_role(756176148001456168,756183369406087208,756176241467326628)

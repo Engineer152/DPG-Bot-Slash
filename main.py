@@ -1,13 +1,15 @@
 import os
 #import keep_alive
 from os import kill
+from dotenv import load_dotenv
+
 try:
     import discord
 except Exception:
     kill(1,15)
 from discord.ext import commands
 
-
+load_dotenv()
 
 intents = discord.Intents.all()
 bot = commands.Bot(

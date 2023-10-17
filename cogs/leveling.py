@@ -124,21 +124,12 @@ class levelsys(commands.Cog):
                     else:
                         channel = await self.bot.fetch_channel(bot_channel)
                     await channel.send(message.author.mention, embed=embed)
-                    for i in message.author.roles:
-                        if i.name.startswith("Level"):
-                            role = int(i.name.split("Level")[-1].split("+:")[0])
-                            for v in range(len(levels)):
-                                if role == levels[v]:
-                                    next = levels[v+1]
-                            if next == nlvl :
-                                for lvls in range(len(levels)):
-                                    if role == levels[lvls]:
-                                        toadd = levels[lvls+1]
-                                await message.author.remove_roles(i, reason="Level up")
-                                await message.author.add_roles(discord.Object(
-                                    id=level[toadd]),reason="Level up")
-                            else:
-                                continue
+                    if nlvl in levels:
+                        #role add here
+                        # level[nlvl]
+                        pass
+                                
+                
                     if nlvl == 5:
                         await message.author.add_roles(
                             discord.Object(id=level[5]), reason="Level up")

@@ -47,7 +47,7 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.is_owner()
     @commands.dm_only()
-    async def msgdel(self,ctx:commands.Context,amount:int):
+    async def msgdel(self,ctx:commands.Context,amount:int=10):
         def is_me(m):
             return m.author == self.bot.user
         deleted = await channel.purge(limit=amount, check=is_me)
@@ -56,7 +56,7 @@ class Admin(commands.Cog):
 
     @msgdel.error
     async def msgdel_error(self, ctx: commands.Context, error):
-        pass
+        await ctx.send(error)
 
 def setup(bot):
     print("Loaded Admin")

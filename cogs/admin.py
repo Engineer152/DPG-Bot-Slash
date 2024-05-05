@@ -49,7 +49,7 @@ class Admin(commands.Cog):
     @commands.dm_only()
     async def msgdel(self,ctx:commands.Context,amount:int):
         def is_me(m):
-            return m.author == client.user
+            return m.author == self.bot.user
         deleted = await channel.purge(limit=amount, check=is_me)
         await channel.send(f'Deleted {len(deleted)} message(s)',delete_after=5)
 

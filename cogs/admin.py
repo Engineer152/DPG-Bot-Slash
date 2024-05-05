@@ -29,12 +29,34 @@ class Admin(commands.Cog):
         await ctx.send(error)
         # await ctx.send('You are not the developer')
 
+
+###########################################################    
+###########################################################
+########FOR IRONMAN TO USE ONLY JUST A FEW CHECKS##########
+########AND FOR DELETING BOTS DM MESSAGES #################
+###########################################################
+###########################################################
+    
     @commands.Cog.listener()
     async def on_raw_message_delete(self, payload):
         if payload.channel_id == 801469012528594944:
-            user = await self.bot.fetch_user(548530397034577930)
-            await user.send(f"⚠ Deletion detected ⚠\nDeletion by: {payload.cached_message.author },{payload.cached_message.author.id }\nMessage Content:{payload.cached_message.content }")
+            if "https://" not in payload.cached_message.content:
+                user = await self.bot.fetch_user(548530397034577930)
+                await user.send(f"⚠ Deletion detected ⚠\nDeletion by: {payload.cached_message.author },{payload.cached_message.author.id }\nMessage Content:{payload.cached_message.content }")
 
+    @commands.command()
+    @commands.is_owner()
+    @commands.dm_only()
+    async def msgdel(self,ctx:commands.Context,amount:int):
+        def is_me(m):
+            return m.author == client.user
+        deleted = await channel.purge(limit=amount, check=is_me)
+        await channel.send(f'Deleted {len(deleted)} message(s)',delete_after=5)
+
+
+    @msgdel.error
+    async def msgdel_error(self, ctx: commands.Context, error):
+        pass
 
 def setup(bot):
     print("Loaded Admin")
